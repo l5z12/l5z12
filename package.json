@@ -1,0 +1,34 @@
+{
+  "name": "l5z12",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.worker.json --noEmit && vite build",
+    "build:wasm": "wasm-pack build wasm --target web --out-dir pkg",
+    "preview": "wrangler dev",
+    "deploy": "bash scripts/build.sh && wrangler deploy",
+    "cf-typegen": "wrangler types",
+    "gen-icon": "bun scripts/gen-icon.ts"
+  },
+  "dependencies": {
+    "vue": "^3.5.31"
+  },
+  "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.33.1",
+    "@tsconfig/node24": "^24.0.4",
+    "@types/node": "^25.6.0",
+    "@types/sharp": "^0.32.0",
+    "@vitejs/plugin-vue": "^6.0.6",
+    "@vue/tsconfig": "^0.9.1",
+    "sharp": "^0.34.5",
+    "typescript": "~6.0.0",
+    "vite": "^8.0.3",
+    "vue-tsc": "^3.2.6",
+    "wrangler": "^4.84.1"
+  },
+  "engines": {
+    "node": "^20.19.0 || >=22.12.0"
+  }
+}
