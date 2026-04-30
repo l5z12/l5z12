@@ -92,14 +92,37 @@ function securityManifest(): Plugin {
   };
 }
 
-export default defineConfig({
-  plugins: [safeVue(), cloudflare(), securityManifest()],
-  resolve: {
-    alias: {
-      "@": fileURLToPath(new URL("./src", import.meta.url)),
-      "@wasm": fileURLToPath(
-        new URL("./wasm/pkg/l5z12_wasm.js", import.meta.url),
-      ),
+// @cloudflare/vite-plugin starts miniflare, which uses `ws` events
+// (`upgrade`, `unexpected-response`) that Bun's polyfill does not implement.
+// Under Bun, miniflare's bootstrap hangs and Vite never binds. Skip the
+// plugin during `vite dev` on Bun — the frontend does not fetch /api/*,
+// so worker-less dev is safe. Build mode always keeps the plugin so the
+// worker bundle is produced. Use wrangler dev (`bun run preview`) when
+// you need to exercise /api/* locally.
+const isBun = typeof (process as { versions?: { bun?: string } }).versions
+  ?.bun === "string";
+
+export default defineConfig(({ command }) => {
+  const skipWorker = command === "serve" && isBun;
+  if (skipWorker) {
+    console.log(
+      "[vite.config] Bun detected in dev — skipping @cloudflare/vite-plugin. " +
+        "Use `bun run preview` (wrangler dev) to test /api/* routes.",
+    );
+  }
+  return {
+    plugins: [
+      safeVue(),
+      ...(skipWorker ? [] : [cloudflare()]),
+      securityManifest(),
+    ],
+    resolve: {
+      alias: {
+        "@": fileURLToPath(new URL("./src", import.meta.url)),
+        "@wasm": fileURLToPath(
+          new URL("./wasm/pkg/l5z12_wasm.js", import.meta.url),
+        ),
+      },
     },
-  },
+  };
 });

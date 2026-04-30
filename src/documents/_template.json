@@ -1,0 +1,26 @@
+{
+  "identity": {
+    "name": "l5z12",
+    "handle": "l5z12"
+  },
+  "document": {
+    "id": "L5Z12-CATEGORY-NNN",
+    "status": "Draft",
+    "updated": "Month YYYY",
+    "summary": "One-line summary shown on the /documents index."
+  },
+  "sections": [
+    {
+      "id": "abstract",
+      "number": null,
+      "title": "Abstract",
+      "content": "Free-form prose describing the purpose of this document."
+    },
+    {
+      "id": "details",
+      "number": 1,
+      "title": "Details",
+      "items": [{ "label": "Key", "value": "Value" }]
+    }
+  ]
+}
