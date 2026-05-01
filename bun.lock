@@ -5,6 +5,7 @@
     "": {
       "name": "l5z12",
       "dependencies": {
+        "@vue/server-renderer": "^3.5.33",
         "vue": "^3.5.31",
       },
       "devDependencies": {

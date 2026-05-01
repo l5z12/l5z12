@@ -6,7 +6,7 @@ export interface Route {
   params: Record<string, string>;
 }
 
-function parse(path: string): Route {
+export function parseRoute(path: string): Route {
   const clean = path.replace(/\/+$/, "") || "/";
 
   if (clean === "/") return { path: clean, name: "home", params: {} };
@@ -29,8 +29,13 @@ const currentPath = ref<string>(
   typeof window !== "undefined" ? window.location.pathname : "/",
 );
 
+/** Server-side rendering hook: pre-set the path before createSSRApp. */
+export function setPath(path: string) {
+  currentPath.value = path;
+}
+
 export const currentRoute: ComputedRef<Route> = computed(() =>
-  parse(currentPath.value),
+  parseRoute(currentPath.value),
 );
 
 export function navigate(to: string, replace = false) {
@@ -86,7 +91,7 @@ export function installRouter() {
 
     // Only intercept paths the router knows about. Static assets like
     // /l5z12.asc, /favicon.ico etc. should fall through to a real request.
-    const route = parse(url.pathname);
+    const route = parseRoute(url.pathname);
     if (route.name === "not-found") return;
 
     event.preventDefault();

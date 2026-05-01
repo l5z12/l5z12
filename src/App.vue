@@ -1,50 +1,22 @@
 <script setup lang="ts">
-import {
-  ref,
-  computed,
-  defineAsyncComponent,
-  onMounted,
-  watch,
-  watchEffect,
-} from "vue";
+import { ref, computed, onMounted, watch, watchEffect } from "vue";
 import HomeView from "@/views/HomeView.vue";
+import DocumentsView from "@/views/DocumentsView.vue";
+import DocumentView from "@/views/DocumentView.vue";
+import NotFoundView from "@/views/NotFoundView.vue";
 import { currentRoute, installRouter } from "@/lib/router";
-import { getDocument, getDefaultDocument } from "@/lib/documents";
+import { pageTitle as pageTitleFor } from "@/lib/title";
 
-// Home is the entry route — keep it eager so it ships in the initial bundle.
-// Other views are split into separate chunks fetched on demand.
-const DocumentsView = defineAsyncComponent(
-  () => import("@/views/DocumentsView.vue"),
-);
-const DocumentView = defineAsyncComponent(
-  () => import("@/views/DocumentView.vue"),
-);
-const NotFoundView = defineAsyncComponent(
-  () => import("@/views/NotFoundView.vue"),
-);
+// Views are imported synchronously rather than via defineAsyncComponent so
+// SSR can render their actual markup. Async components emit empty comment
+// placeholders during renderToString which then mismatch on hydration.
+const pageTitle = computed<string>(() => pageTitleFor(currentRoute.value));
 
-const SITE_TITLE = "l5z12";
-
-const pageTitle = computed<string>(() => {
-  const route = currentRoute.value;
-  if (route.name === "home") {
-    const doc = getDefaultDocument();
-    return doc ? `${doc.document.id} | ${SITE_TITLE}` : SITE_TITLE;
-  }
-  if (route.name === "documents") return `Documents | ${SITE_TITLE}`;
-  if (route.name === "document") {
-    const id = route.params.id ?? "";
-    const doc = getDocument(id);
-    return doc
-      ? `${doc.document.id} | ${SITE_TITLE}`
-      : `Not found | ${SITE_TITLE}`;
-  }
-  return `Not found | ${SITE_TITLE}`;
-});
-
-watchEffect(() => {
-  document.title = pageTitle.value;
-});
+if (typeof document !== "undefined") {
+  watchEffect(() => {
+    document.title = pageTitle.value;
+  });
+}
 
 type Theme = "auto" | "light" | "dark";
 const THEME_KEY = "l5z12-theme";

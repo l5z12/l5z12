@@ -102,9 +102,12 @@ function securityManifest(): Plugin {
 const isBun = typeof (process as { versions?: { bun?: string } }).versions
   ?.bun === "string";
 
-export default defineConfig(({ command }) => {
-  const skipWorker = command === "serve" && isBun;
-  if (skipWorker) {
+export default defineConfig(({ command, isSsrBuild }) => {
+  // The SSR build produces a server bundle for prerendering; it must not
+  // run the Cloudflare plugin (which only makes sense for the client/worker
+  // pipeline) or the security manifest (irrelevant for the server bundle).
+  const skipWorker = isSsrBuild || (command === "serve" && isBun);
+  if (skipWorker && !isSsrBuild) {
     console.log(
       "[vite.config] Bun detected in dev — skipping @cloudflare/vite-plugin. " +
         "Use `bun run preview` (wrangler dev) to test /api/* routes.",
@@ -114,7 +117,7 @@ export default defineConfig(({ command }) => {
     plugins: [
       safeVue(),
       ...(skipWorker ? [] : [cloudflare()]),
-      securityManifest(),
+      ...(isSsrBuild ? [] : [securityManifest()]),
     ],
     resolve: {
       alias: {

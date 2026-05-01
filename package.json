@@ -5,14 +5,17 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.worker.json --noEmit && vite build",
+    "build": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.worker.json --noEmit && vite build && bun run build:ssr && bun run prerender",
+    "build:ssr": "vite build --ssr src/entry-server.ts --outDir dist/server",
     "build:wasm": "bash scripts/build-wasm.sh",
+    "prerender": "bun scripts/prerender.ts",
     "preview": "wrangler dev",
     "deploy": "bash scripts/build.sh && wrangler deploy",
     "cf-typegen": "wrangler types",
     "gen-icon": "bun scripts/gen-icon.ts"
   },
   "dependencies": {
+    "@vue/server-renderer": "^3.5.33",
     "vue": "^3.5.31"
   },
   "devDependencies": {
