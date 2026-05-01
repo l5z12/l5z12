@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -p tsconfig.app.json --noEmit && tsc -p tsconfig.worker.json --noEmit && vite build",
-    "build:wasm": "wasm-pack build wasm --target web --out-dir pkg",
+    "build:wasm": "bash scripts/build-wasm.sh",
     "preview": "wrangler dev",
     "deploy": "bash scripts/build.sh && wrangler deploy",
     "cf-typegen": "wrangler types",

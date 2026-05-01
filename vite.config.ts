@@ -119,9 +119,6 @@ export default defineConfig(({ command }) => {
     resolve: {
       alias: {
         "@": fileURLToPath(new URL("./src", import.meta.url)),
-        "@wasm": fileURLToPath(
-          new URL("./wasm/pkg/l5z12_wasm.js", import.meta.url),
-        ),
       },
     },
   };

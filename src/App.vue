@@ -1,11 +1,27 @@
 <script setup lang="ts">
-import { ref, computed, onMounted, watch, watchEffect } from "vue";
+import {
+  ref,
+  computed,
+  defineAsyncComponent,
+  onMounted,
+  watch,
+  watchEffect,
+} from "vue";
 import HomeView from "@/views/HomeView.vue";
-import DocumentsView from "@/views/DocumentsView.vue";
-import DocumentView from "@/views/DocumentView.vue";
-import NotFoundView from "@/views/NotFoundView.vue";
 import { currentRoute, installRouter } from "@/lib/router";
 import { getDocument, getDefaultDocument } from "@/lib/documents";
+
+// Home is the entry route — keep it eager so it ships in the initial bundle.
+// Other views are split into separate chunks fetched on demand.
+const DocumentsView = defineAsyncComponent(
+  () => import("@/views/DocumentsView.vue"),
+);
+const DocumentView = defineAsyncComponent(
+  () => import("@/views/DocumentView.vue"),
+);
+const NotFoundView = defineAsyncComponent(
+  () => import("@/views/NotFoundView.vue"),
+);
 
 const SITE_TITLE = "l5z12";
 

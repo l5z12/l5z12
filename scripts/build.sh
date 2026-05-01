@@ -10,20 +10,24 @@ if ! command -v cargo &>/dev/null; then
   # shellcheck source=/dev/null
   source "$HOME/.cargo/env"
 else
-  # Ensure wasm32 target is present
   rustup target add wasm32-unknown-unknown
 fi
 
-# ── wasm-pack ────────────────────────────────────────────────────────────────
-if ! command -v wasm-pack &>/dev/null; then
-  echo "[build] wasm-pack not found — installing..."
-  curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-  export PATH="$HOME/.cargo/bin:$PATH"
+# ── wasm-opt (binaryen) ──────────────────────────────────────────────────────
+# We invoke wasm-opt directly rather than going through wasm-pack — the crate
+# does not use wasm-bindgen, so the wasm-pack pipeline would just add weight.
+if ! command -v wasm-opt &>/dev/null; then
+  echo "[build] wasm-opt not found — downloading binaryen..."
+  BINARYEN_VER=version_117
+  TMP=$(mktemp -d)
+  curl -fsSL "https://github.com/WebAssembly/binaryen/releases/download/${BINARYEN_VER}/binaryen-${BINARYEN_VER}-x86_64-linux.tar.gz" \
+    | tar xz -C "$TMP"
+  export PATH="$TMP/binaryen-${BINARYEN_VER}/bin:$PATH"
 fi
 
-echo "[build] rustc  $(rustc --version)"
-echo "[build] wasm-pack $(wasm-pack --version)"
-echo "[build] bun    $(bun --version)"
+echo "[build] rustc    $(rustc --version)"
+echo "[build] wasm-opt $(wasm-opt --version | head -1)"
+echo "[build] bun      $(bun --version)"
 
 # ── Build ────────────────────────────────────────────────────────────────────
 bun run build:wasm

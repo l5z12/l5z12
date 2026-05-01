@@ -55,40 +55,8 @@ function summaryFor(doc: ReturnType<typeof listDocuments>[number]): string {
 </template>
 
 <style scoped>
-.doc-header {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--fg-muted);
-  margin-bottom: 0.5rem;
-}
-
-.doc-meta-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.doc-rule-top {
-  border: none;
-  border-top: 2px solid var(--fg);
-  margin: 0;
-}
-
-.doc-body {
-  padding: 2rem 0;
-}
-
 .title-block {
   margin-bottom: 2rem;
-}
-
-.page-title {
-  font-family: var(--font-mono);
-  font-size: 2rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  margin: 0 0 0.5rem;
-  color: var(--fg);
 }
 
 .page-lede {
@@ -154,11 +122,5 @@ function summaryFor(doc: ReturnType<typeof listDocuments>[number]): string {
   font-family: var(--font-mono);
   font-size: 0.75rem;
   color: var(--fg-muted);
-}
-
-.empty {
-  padding: 2rem 0;
-  color: var(--fg-muted);
-  font-family: var(--font-mono);
 }
 </style>

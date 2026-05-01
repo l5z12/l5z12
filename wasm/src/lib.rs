@@ -1,4 +1,4 @@
-use wasm_bindgen::prelude::*;
+use std::mem::ManuallyDrop;
 
 // ── CRC32 IEEE 802.3 ─────────────────────────────────────────────────────
 
@@ -30,11 +30,11 @@ const fn crc32(data: &[u8]) -> u32 {
 // Format : hash:<crc32_hex> username:<scrambled> domain:<label0>.<label1>...
 // Rebuild: bun scripts/gen-email.ts <email>  →  paste output into lib.rs
 //          then run: wasm-pack build wasm --target web --out-dir pkg
-const HASH: u32       = 0xF49C2AFC;
+const HASH: u32 = 0xF49C2AFC;
 const USERNAME: &[u8] = b"tno";
 const LABELS: &[&[u8]] = &[b"zl251", b"evd"];
 
-// ── Permutation brute-force ───────────────────────────────────────────────
+// ── Permutation brute-force ──────────────────────────────────────────────
 
 fn permutations(s: &[u8]) -> Vec<Vec<u8>> {
     if s.len() <= 1 {
@@ -54,13 +54,13 @@ fn permutations(s: &[u8]) -> Vec<Vec<u8>> {
 }
 
 fn try_domain(
-    u_bytes: &[u8],
+    user: &[u8],
     label_perms: &[Vec<Vec<u8>>],
     idx: usize,
     prefix: &mut Vec<u8>,
 ) -> Option<String> {
     if idx == label_perms.len() {
-        let mut candidate = u_bytes.to_vec();
+        let mut candidate = user.to_vec();
         candidate.push(b'@');
         candidate.extend_from_slice(prefix);
         if crc32(&candidate) == HASH {
@@ -74,7 +74,7 @@ fn try_domain(
             prefix.push(b'.');
         }
         prefix.extend_from_slice(perm);
-        if let Some(email) = try_domain(u_bytes, label_perms, idx + 1, prefix) {
+        if let Some(email) = try_domain(user, label_perms, idx + 1, prefix) {
             return Some(email);
         }
         prefix.truncate(prev_len);
@@ -82,17 +82,27 @@ fn try_domain(
     None
 }
 
-// ── Public API ────────────────────────────────────────────────────────────
-
-/// Brute-force all permutations of the scrambled username and domain labels
-/// until CRC32 of the assembled address matches the stored hash.
-#[wasm_bindgen]
-pub fn reveal() -> String {
+fn solve() -> String {
     let label_perms: Vec<Vec<Vec<u8>>> = LABELS.iter().map(|l| permutations(l)).collect();
-    for u_perm in permutations(USERNAME) {
-        if let Some(email) = try_domain(&u_perm, &label_perms, 0, &mut Vec::new()) {
+    for u in permutations(USERNAME) {
+        if let Some(email) = try_domain(&u, &label_perms, 0, &mut Vec::new()) {
             return email;
         }
     }
     String::new()
+}
+
+// ── ABI ──────────────────────────────────────────────────────────────────
+//
+// Returns the result string as a packed u64: (len << 32) | ptr.
+// The string is leaked into wasm linear memory; the JS side reads the bytes
+// directly out of `memory.buffer`. Safe because reveal() is called at most
+// once per page session, after which the WebAssembly.Module is GC'd.
+
+#[unsafe(no_mangle)]
+pub extern "C" fn reveal() -> u64 {
+    let s = ManuallyDrop::new(solve());
+    let ptr = s.as_ptr() as u32;
+    let len = s.len() as u32;
+    ((len as u64) << 32) | (ptr as u64)
 }

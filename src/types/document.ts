@@ -1,5 +1,8 @@
 export interface AvatarConfig {
+  /** JPEG/PNG fallback path. Required. */
   src: string;
+  /** Optional WebP path used as the preferred source. */
+  webp?: string;
   alt: string;
   attribution: { text: string; url: string };
 }

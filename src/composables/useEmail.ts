@@ -10,9 +10,8 @@ export function useEmail() {
     if (state.value !== "idle") return;
     state.value = "loading";
     try {
-      const mod = await import("@wasm");
-      await mod.default();
-      email.value = mod.reveal();
+      const { reveal } = await import("@/lib/wasm");
+      email.value = await reveal();
       state.value = "ready";
     } catch {
       state.value = "error";

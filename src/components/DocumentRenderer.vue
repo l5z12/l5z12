@@ -24,11 +24,22 @@ const { email, state: emailState, load: loadEmail } = useEmail();
   <div class="doc-body">
     <section class="title-section">
       <div v-if="doc.identity.avatar" class="avatar-block">
-        <img
-          :src="doc.identity.avatar.src"
-          :alt="doc.identity.avatar.alt"
-          class="avatar"
-        />
+        <picture>
+          <source
+            v-if="doc.identity.avatar.webp"
+            :srcset="doc.identity.avatar.webp"
+            type="image/webp"
+          />
+          <img
+            :src="doc.identity.avatar.src"
+            :alt="doc.identity.avatar.alt"
+            width="96"
+            height="96"
+            decoding="async"
+            fetchpriority="high"
+            class="avatar"
+          />
+        </picture>
         <p class="avatar-credit">
           Art:&nbsp;<a
             :href="doc.identity.avatar.attribution.url"
@@ -99,29 +110,6 @@ const { email, state: emailState, load: loadEmail } = useEmail();
 </template>
 
 <style scoped>
-.doc-header {
-  font-family: var(--font-mono);
-  font-size: 0.8rem;
-  color: var(--fg-muted);
-  margin-bottom: 0.5rem;
-}
-
-.doc-meta-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-}
-
-.doc-rule-top {
-  border: none;
-  border-top: 2px solid var(--fg);
-  margin: 0;
-}
-
-.doc-body {
-  padding: 2rem 0;
-}
-
 .title-section {
   display: flex;
   align-items: flex-start;
@@ -242,9 +230,5 @@ const { email, state: emailState, load: loadEmail } = useEmail();
 
 .reveal-btn:hover {
   border-color: var(--link);
-}
-
-.mono {
-  font-family: var(--font-mono);
 }
 </style>

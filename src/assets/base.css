@@ -74,3 +74,54 @@ img {
 button {
   cursor: pointer;
 }
+
+/* ── Shared document layout ─────────────────────────────────────────────
+ * Used by DocumentRenderer, DocumentsView, DocumentView, NotFoundView.
+ * Kept global so view chunks don't ship duplicate copies.
+ */
+.doc-header {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--fg-muted);
+  margin-bottom: 0.5rem;
+}
+
+.doc-meta-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.doc-rule-top {
+  border: none;
+  border-top: 2px solid var(--fg);
+  margin: 0;
+}
+
+.doc-body {
+  padding: 2rem 0;
+}
+
+.page-title {
+  font-family: var(--font-mono);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.5rem;
+  color: var(--fg);
+}
+
+.page-title.small {
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem;
+}
+
+.empty {
+  padding: 2rem 0;
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+}
+
+.mono {
+  font-family: var(--font-mono);
+}

@@ -10,11 +10,3 @@ const doc = computed(() => getDefaultDocument());
   <DocumentRenderer v-if="doc" :doc="doc" />
   <p v-else class="empty">No documents available.</p>
 </template>
-
-<style scoped>
-.empty {
-  padding: 2rem 0;
-  color: var(--fg-muted);
-  font-family: var(--font-mono);
-}
-</style>

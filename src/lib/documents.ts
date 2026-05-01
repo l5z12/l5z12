@@ -27,14 +27,10 @@ for (const [path, doc] of Object.entries(modules)) {
 
 all.sort((a, b) => a.document.id.localeCompare(b.document.id));
 
-export const DEFAULT_DOCUMENT_ID = "L5Z12-PERSONAL-001";
+const DEFAULT_DOCUMENT_ID = "L5Z12-PERSONAL-001";
 
 export function listDocuments(): Document[] {
   return all.filter((d) => !d.document.unlisted);
-}
-
-export function allDocuments(): Document[] {
-  return all;
 }
 
 export function getDocument(id: string): Document | undefined {
