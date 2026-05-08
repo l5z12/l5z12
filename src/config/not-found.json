@@ -1,0 +1,10 @@
+{
+  "code": "404",
+  "status": "Not found",
+  "title": "Page not found",
+  "message": "The requested path does not exist.",
+  "links": [
+    { "label": "Home", "url": "/" },
+    { "label": "Documents", "url": "/documents" }
+  ]
+}
