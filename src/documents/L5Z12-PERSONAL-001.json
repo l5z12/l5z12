@@ -43,6 +43,13 @@
           "url": "https://gitlab.com/l5z12",
           "rel": "me",
           "mono": true
+        },
+        {
+          "label": "Twitter",
+          "value": "x.com/l5z12_",
+          "url": "https://x.com/l5z12_",
+          "rel": "me",
+          "mono": true
         }
       ]
     },
