@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://l5z12.dev/sitemap.xml

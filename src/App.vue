@@ -6,6 +6,7 @@ import DocumentView from "@/views/DocumentView.vue";
 import NotFoundView from "@/views/NotFoundView.vue";
 import { currentRoute, installRouter } from "@/lib/router";
 import { pageTitle as pageTitleFor } from "@/lib/title";
+import { applyHeadToDom } from "@/lib/meta";
 
 // Views are imported synchronously rather than via defineAsyncComponent so
 // SSR can render their actual markup. Async components emit empty comment
@@ -15,6 +16,9 @@ const pageTitle = computed<string>(() => pageTitleFor(currentRoute.value));
 if (typeof document !== "undefined") {
   watchEffect(() => {
     document.title = pageTitle.value;
+    // Keep description / canonical / Open Graph correct across SPA navigation;
+    // prerendered HTML already ships with the right values on first paint.
+    applyHeadToDom(currentRoute.value);
   });
 }
 

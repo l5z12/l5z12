@@ -8,7 +8,21 @@
   "compatibility_date": "2026-04-23",
   "main": "server/index.ts",
   "assets": {
+    "binding": "ASSETS",
     "not_found_handling": "single-page-application",
+    // When run_worker_first is a list, ONLY these routes reach the Worker;
+    // everything else is served straight from assets (with the SPA fallback on
+    // a miss). So every Worker-handled path must be listed:
+    //   - /, /documents, /document/* → Accept: text/markdown negotiation + Link
+    //   - /api/*                     → JSON endpoints (info, health, security)
+    // /api/openapi.json is a prerendered static file, so exclude it.
+    "run_worker_first": [
+      "/",
+      "/documents",
+      "/document/*",
+      "/api/*",
+      "!/api/openapi.json",
+    ],
   },
   "observability": {
     "enabled": true,
