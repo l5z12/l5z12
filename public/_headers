@@ -1,15 +1,10 @@
-# Custom response headers for static assets.
-# NOTE: these apply only to asset-server responses. The main routes
-# (/, /documents, /document/*) run worker-first for Accept negotiation, so the
-# Worker sets their Link/Vary headers (see server/index.ts).
+# Custom response headers for the static site (Cloudflare Workers static assets).
+# The site is fully static — there is no Worker — so these headers apply to
+# every response.
 
 /*
-  Link: </.well-known/api-catalog>; rel="api-catalog"
   Link: </llms.txt>; rel="describedby"; type="text/markdown"
   Link: </sitemap.xml>; rel="sitemap"; type="application/xml"
-
-/.well-known/api-catalog
-  Content-Type: application/linkset+json; charset=utf-8
 
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8

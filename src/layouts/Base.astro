@@ -1,0 +1,195 @@
+---
+import "@/assets/base.css";
+import type { Route } from "@/lib/routes";
+import { pageMeta } from "@/lib/meta";
+import { pageTitle } from "@/lib/title";
+import { SITE_NAME, SITE_IMAGE } from "@/lib/site";
+
+interface Props {
+  route: Route;
+}
+
+const { route } = Astro.props;
+const meta = pageMeta(route);
+const title = pageTitle(route);
+const robots = meta.index ? "index, follow" : "noindex, follow";
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Identity rel=me -->
+    <link rel="me" href="https://github.com/l5z12" />
+    <link rel="me" href="https://gitlab.com/l5z12" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <title>{title}</title>
+
+    <!-- Per-route SEO / Open Graph / JSON-LD (static). -->
+    <meta name="description" content={meta.description} />
+    <meta name="robots" content={robots} />
+    <link rel="canonical" href={meta.canonical} />
+    <meta property="og:type" content={meta.ogType} />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={meta.description} />
+    <meta property="og:url" content={meta.canonical} />
+    <meta property="og:image" content={SITE_IMAGE} />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={meta.description} />
+    <meta name="twitter:image" content={SITE_IMAGE} />
+    {
+      meta.jsonLd.map((obj) => (
+        <script
+          is:inline
+          type="application/ld+json"
+          set:html={JSON.stringify(obj).replace(/</g, "\\u003c")}
+        />
+      ))
+    }
+
+    <!--
+      Theme, part 1: apply the saved theme before first paint to avoid a flash.
+      Inline (not bundled) so it runs synchronously in <head>.
+    -->
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem("l5z12-theme");
+          if (t === "light" || t === "dark")
+            document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="page">
+      <div class="view-slot">
+        <slot />
+      </div>
+
+      <div class="doc-rule-bottom"></div>
+
+      <footer class="doc-footer">
+        <span>&copy;&nbsp;l5z12</span>
+        <span class="footer-sep">|</span>
+        <a href="/" class="footer-link">Home</a>
+        <span class="footer-sep">|</span>
+        <a href="/documents" class="footer-link">Documents</a>
+        <span class="footer-sep">|</span>
+        <button id="theme-btn" class="theme-btn" type="button">Auto</button>
+      </footer>
+    </div>
+
+    <!--
+      Theme, part 2: wire the toggle (cycle auto → light → dark, persisted) and
+      sync the button label. Inline: no imports, no bundle, no extra request.
+    -->
+    <script is:inline>
+      (function () {
+        var KEY = "l5z12-theme";
+        var next = { auto: "light", light: "dark", dark: "auto" };
+        var label = { auto: "Auto", light: "Light", dark: "Dark" };
+        var root = document.documentElement;
+        var btn = document.getElementById("theme-btn");
+
+        function current() {
+          try {
+            var t = localStorage.getItem(KEY);
+            if (t === "auto" || t === "light" || t === "dark") return t;
+          } catch (e) {}
+          return "auto";
+        }
+
+        function apply(t) {
+          if (t === "auto") root.removeAttribute("data-theme");
+          else root.setAttribute("data-theme", t);
+          try {
+            localStorage.setItem(KEY, t);
+          } catch (e) {}
+          if (btn) {
+            btn.textContent = label[t];
+            btn.title = "Theme: " + label[t] + " — click to cycle";
+          }
+        }
+
+        apply(current());
+        if (btn)
+          btn.addEventListener("click", function () {
+            apply(next[current()]);
+          });
+      })();
+    </script>
+  </body>
+</html>
+
+<style>
+  .page {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .view-slot {
+    flex: 1;
+  }
+
+  .doc-rule-bottom {
+    border: none;
+    border-top: 2px solid var(--fg);
+    margin: 0;
+  }
+
+  .doc-footer {
+    padding-top: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+  }
+
+  .footer-sep {
+    color: var(--border);
+  }
+
+  .footer-link {
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+  }
+
+  .footer-link:hover {
+    color: var(--fg);
+  }
+
+  .theme-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--fg-muted);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    padding: 0.1rem 0.4rem;
+    cursor: pointer;
+    border-radius: 2px;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .theme-btn:hover {
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+</style>

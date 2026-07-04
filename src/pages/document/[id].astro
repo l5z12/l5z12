@@ -1,0 +1,47 @@
+---
+import Base from "@/layouts/Base.astro";
+import DocumentRenderer from "@/components/DocumentRenderer.astro";
+import { allDocuments, getDocument } from "@/lib/documents";
+import { parseRoute } from "@/lib/routes";
+
+export function getStaticPaths() {
+  return allDocuments().map((d) => ({ params: { id: d.document.id } }));
+}
+
+const { id } = Astro.params;
+const doc = getDocument(id!);
+const route = parseRoute(`/document/${id}`);
+---
+
+<Base route={route}>
+  {
+    doc ? (
+      <DocumentRenderer doc={doc} />
+    ) : (
+      <>
+        <header class="doc-header">
+          <div class="doc-meta-row">
+            <span>{id}</span>
+            <span>404</span>
+          </div>
+        </header>
+        <div class="doc-rule-top" />
+        <main class="doc-body missing">
+          <h1 class="page-title small">Document not found</h1>
+          <p>
+            No document with id <code class="mono">{id}</code> exists.
+          </p>
+          <p>
+            <a href="/documents">Back to index</a>
+          </p>
+        </main>
+      </>
+    )
+  }
+</Base>
+
+<style>
+  .missing {
+    font-family: var(--font-body);
+  }
+</style>

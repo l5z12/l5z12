@@ -33,6 +33,14 @@ export function listDocuments(): Document[] {
   return all.filter((d) => !d.document.unlisted);
 }
 
+/**
+ * Every document, including `unlisted` ones. Used to statically generate a page
+ * per document (an unlisted doc is hidden from the index but reachable by URL).
+ */
+export function allDocuments(): Document[] {
+  return all;
+}
+
 export function getDocument(id: string): Document | undefined {
   return byId.get(id);
 }

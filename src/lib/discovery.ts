@@ -1,11 +1,9 @@
 /**
  * Build-time generators for crawler / agent discovery artifacts:
- *   - sitemap.xml                      (sitemaps.org protocol)
- *   - llms.txt                         (llmstxt.org)
- *   - /.well-known/api-catalog         (RFC 9727, application/linkset+json)
- *   - /api/openapi.json                (OpenAPI 3.1 for the Worker API)
+ *   - sitemap.xml    (sitemaps.org protocol)
+ *   - llms.txt       (llmstxt.org)
  *
- * These are written to dist/client during prerender (scripts/prerender.ts) so
+ * Emitted as Astro static endpoints (src/pages/sitemap.xml.ts, llms.txt.ts) so
  * they ship as static assets and stay in sync with the document set.
  */
 
@@ -65,116 +63,16 @@ export function llmsTxt(): string {
     "",
     "## Resources",
     "",
-    `- [API catalog](${SITE_ORIGIN}/.well-known/api-catalog): RFC 9727 API discovery (application/linkset+json)`,
-    `- [OpenAPI specification](${SITE_ORIGIN}/api/openapi.json): machine-readable API description`,
     `- [Sitemap](${SITE_ORIGIN}/sitemap.xml): canonical URL list`,
     `- [PGP key](${SITE_ORIGIN}/l5z12.asc): signature verification and encrypted contact`,
     "",
     "## Notes",
     "",
-    "Every page also returns Markdown when requested with the `Accept: text/markdown` header.",
+    "A Markdown version of each page is published alongside it: append `/index.md` " +
+      "to any page path (e.g. `/index.md`, `/documents/index.md`, " +
+      "`/document/<id>/index.md`).",
     "",
   );
 
   return lines.join("\n");
-}
-
-export function openApiSpec(): string {
-  const spec = {
-    openapi: "3.1.0",
-    info: {
-      title: `${SITE_NAME} API`,
-      version: "1.0.0",
-      description:
-        "Public, unauthenticated metadata endpoints served by the l5z12 Worker.",
-    },
-    servers: [{ url: `${SITE_ORIGIN}/api` }],
-    paths: {
-      "/info": {
-        get: {
-          summary: "Identity and contact metadata",
-          operationId: "getInfo",
-          responses: {
-            "200": {
-              description: "Identity record",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: {
-                      handle: { type: "string" },
-                      github: { type: "string", format: "uri" },
-                      gitlab: { type: "string", format: "uri" },
-                      gpg: { type: "string" },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/health": {
-        get: {
-          summary: "Liveness probe",
-          operationId: "getHealth",
-          responses: {
-            "200": {
-              description: "Service is healthy",
-              content: {
-                "application/json": {
-                  schema: {
-                    type: "object",
-                    properties: { status: { type: "string" } },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-      "/security": {
-        get: {
-          summary: "Redirect to the build-time security manifest",
-          operationId: "getSecurity",
-          responses: {
-            "301": { description: "Redirect to /security.json" },
-          },
-        },
-      },
-    },
-  };
-  return JSON.stringify(spec, null, 2) + "\n";
-}
-
-export function apiCatalog(): string {
-  const linkset = {
-    linkset: [
-      {
-        anchor: `${SITE_ORIGIN}/api`,
-        "service-desc": [
-          {
-            href: `${SITE_ORIGIN}/api/openapi.json`,
-            type: "application/json",
-            title: "OpenAPI 3.1 specification",
-          },
-        ],
-        "service-doc": [
-          {
-            href: `${SITE_ORIGIN}/llms.txt`,
-            type: "text/markdown",
-            title: "Human- and agent-readable site overview",
-          },
-        ],
-        status: [
-          {
-            href: `${SITE_ORIGIN}/api/health`,
-            type: "application/json",
-            title: "Liveness probe",
-          },
-        ],
-      },
-    ],
-  };
-  return JSON.stringify(linkset, null, 2) + "\n";
 }

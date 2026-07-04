@@ -1,0 +1,19 @@
+---
+import Base from "@/layouts/Base.astro";
+import DocumentRenderer from "@/components/DocumentRenderer.astro";
+import { getDefaultDocument } from "@/lib/documents";
+import { parseRoute } from "@/lib/routes";
+
+const doc = getDefaultDocument();
+const route = parseRoute("/");
+---
+
+<Base route={route}>
+  {
+    doc ? (
+      <DocumentRenderer doc={doc} />
+    ) : (
+      <p class="empty">No documents available.</p>
+    )
+  }
+</Base>

@@ -1,4 +1,4 @@
-import type { Route } from "./router";
+import type { Route } from "./routes";
 import { getDocument, getDefaultDocument } from "./documents";
 
 const SITE_TITLE = "l5z12";

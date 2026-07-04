@@ -1,0 +1,271 @@
+---
+import type { Document } from "@/types/document";
+
+interface Props {
+  doc: Document;
+}
+
+const { doc } = Astro.props;
+---
+
+<header class="doc-header">
+  <div class="doc-meta-row">
+    <span class="doc-id">{doc.document.id}</span>
+    <span class="doc-status">{doc.document.status}</span>
+  </div>
+  <div class="doc-meta-row">
+    <span class="doc-author">{doc.identity.handle}</span>
+    <span class="doc-updated">Updated:&nbsp;{doc.document.updated}</span>
+  </div>
+</header>
+
+<div class="doc-rule-top"></div>
+
+<div class="doc-body">
+  <section class="title-section">
+    {
+      doc.identity.avatar && (
+        <div class="avatar-block">
+          <picture>
+            {doc.identity.avatar.webp && (
+              <source srcset={doc.identity.avatar.webp} type="image/webp" />
+            )}
+            <img
+              src={doc.identity.avatar.src}
+              alt={doc.identity.avatar.alt}
+              width="96"
+              height="96"
+              decoding="async"
+              fetchpriority="high"
+              class="avatar"
+            />
+          </picture>
+          <p class="avatar-credit">
+            Art:&nbsp;
+            <a
+              href={doc.identity.avatar.attribution.url}
+              target="_blank"
+              rel="noopener noreferrer external"
+            >
+              {doc.identity.avatar.attribution.text}
+            </a>
+          </p>
+        </div>
+      )
+    }
+    <h1 class="identity-name">{doc.identity.name}</h1>
+  </section>
+
+  {
+    doc.sections.map((section) => (
+      <section id={section.id} class="doc-section">
+        <h2 class="section-heading">
+          {section.number !== null && (
+            <span class="section-num">{section.number}.&nbsp;</span>
+          )}
+          {section.title}
+        </h2>
+        <hr class="section-hr" />
+
+        {section.content && <p class="section-body">{section.content}</p>}
+
+        {section.items && section.items.length > 0 && (
+          <dl class="item-list">
+            {section.items.map((item) => (
+              <div class="item-row">
+                <dt class="item-label">{item.label}</dt>
+                <dd class="item-value">
+                  {item.type === "email" ? (
+                    <span class="email-reveal" data-email-reveal>
+                      <button
+                        class="reveal-btn"
+                        type="button"
+                        data-email-btn
+                      >
+                        Show email
+                      </button>
+                      <span class="item-muted mono" data-email-loading hidden>
+                        calculating…
+                      </span>
+                      <span class="item-muted mono" data-email-error hidden>
+                        unavailable
+                      </span>
+                      <a class="mono" data-email-link hidden />
+                    </span>
+                  ) : item.url ? (
+                    <a
+                      href={item.url}
+                      rel={item.rel}
+                      class={item.mono ? "mono" : undefined}
+                      target="_blank"
+                    >
+                      &lt;{item.value}&gt;
+                    </a>
+                  ) : (
+                    <span class={item.mono ? "mono" : undefined}>
+                      {item.value}
+                    </span>
+                  )}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
+      </section>
+    ))
+  }
+</div>
+
+<script>
+  // Email reveal: the address is never in the HTML. On click, lazy-load the
+  // WASM (fetched only now), brute-force the address, and swap in a mailto.
+  const holder = document.querySelector<HTMLElement>("[data-email-reveal]");
+  if (holder) {
+    const btn = holder.querySelector<HTMLButtonElement>("[data-email-btn]");
+    const loading = holder.querySelector<HTMLElement>("[data-email-loading]");
+    const error = holder.querySelector<HTMLElement>("[data-email-error]");
+    const link = holder.querySelector<HTMLAnchorElement>("[data-email-link]");
+
+    btn?.addEventListener("click", async () => {
+      btn.hidden = true;
+      if (loading) loading.hidden = false;
+      try {
+        const { reveal } = await import("@/lib/wasm");
+        const email = await reveal();
+        if (loading) loading.hidden = true;
+        if (link) {
+          link.href = `mailto:${email}`;
+          link.textContent = `<${email}>`;
+          link.hidden = false;
+        }
+      } catch {
+        if (loading) loading.hidden = true;
+        if (error) error.hidden = false;
+      }
+    });
+  }
+</script>
+
+<style>
+  .title-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+  }
+
+  .avatar-block {
+    flex-shrink: 0;
+    text-align: center;
+  }
+
+  .avatar {
+    display: block;
+    width: 96px;
+    height: 96px;
+    object-fit: cover;
+    border: 1px solid var(--border);
+  }
+
+  .avatar-credit {
+    font-size: 0.65rem;
+    color: var(--fg-muted);
+    margin: 0.35rem 0 0;
+    font-family: var(--font-mono);
+    white-space: nowrap;
+  }
+
+  .avatar-credit a {
+    color: inherit;
+  }
+
+  .identity-name {
+    font-family: var(--font-mono);
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin: 0;
+    line-height: 1;
+    align-self: center;
+    color: var(--fg);
+  }
+
+  .doc-section {
+    margin-bottom: 2rem;
+  }
+
+  .section-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .section-num {
+    color: var(--fg-muted);
+  }
+
+  .section-hr {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 0 0 1rem;
+  }
+
+  .section-body {
+    margin: 0 0 0.75rem;
+    line-height: 1.7;
+  }
+
+  .item-list {
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 0.25rem 1.5rem;
+  }
+
+  .item-row {
+    display: contents;
+  }
+
+  .item-label {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--fg-muted);
+    white-space: nowrap;
+    align-self: center;
+  }
+
+  .item-value {
+    margin: 0;
+  }
+
+  .item-value a,
+  .item-value span {
+    font-size: 0.9rem;
+  }
+
+  .item-muted {
+    color: var(--fg-muted);
+    font-style: italic;
+  }
+
+  .reveal-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--link);
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    padding: 0.1rem 0.5rem;
+    cursor: pointer;
+    border-radius: 2px;
+    transition:
+      border-color 0.15s,
+      color 0.15s;
+  }
+
+  .reveal-btn:hover {
+    border-color: var(--link);
+  }
+</style>

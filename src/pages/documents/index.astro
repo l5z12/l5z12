@@ -1,0 +1,135 @@
+---
+import Base from "@/layouts/Base.astro";
+import { listDocuments } from "@/lib/documents";
+import { parseRoute } from "@/lib/routes";
+import type { Document } from "@/types/document";
+
+const docs = listDocuments();
+const route = parseRoute("/documents");
+
+function summaryFor(doc: Document): string {
+  if (doc.document.summary) return doc.document.summary;
+  const abstract = doc.sections.find((s) => s.id === "abstract");
+  return abstract?.content ?? "";
+}
+---
+
+<Base route={route}>
+  <header class="doc-header">
+    <div class="doc-meta-row">
+      <span class="doc-id">L5Z12-INDEX</span>
+      <span class="doc-status">Index</span>
+    </div>
+    <div class="doc-meta-row">
+      <span>l5z12</span>
+      <span>{docs.length} document{docs.length === 1 ? "" : "s"}</span>
+    </div>
+  </header>
+
+  <div class="doc-rule-top"></div>
+
+  <main class="doc-body">
+    <section class="title-block">
+      <h1 class="page-title">Documents</h1>
+      <p class="page-lede">
+        Index of public documents. Select an entry to read the full text.
+      </p>
+    </section>
+
+    {
+      docs.length > 0 ? (
+        <ul class="doc-list">
+          {docs.map((doc) => (
+            <li class="doc-list-item">
+              <a href={`/document/${doc.document.id}`} class="doc-link">
+                <div class="doc-line">
+                  <span class="doc-list-id">{doc.document.id}</span>
+                  <span class="doc-list-status">{doc.document.status}</span>
+                </div>
+                {summaryFor(doc) && (
+                  <p class="doc-list-summary">{summaryFor(doc)}</p>
+                )}
+                <div class="doc-list-meta">
+                  Updated:&nbsp;{doc.document.updated}
+                </div>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">No documents available.</p>
+      )
+    }
+  </main>
+</Base>
+
+<style>
+  .title-block {
+    margin-bottom: 2rem;
+  }
+
+  .page-lede {
+    margin: 0;
+    color: var(--fg-muted);
+    line-height: 1.7;
+  }
+
+  .doc-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .doc-list-item {
+    border-bottom: 1px solid var(--border);
+  }
+
+  .doc-link {
+    display: block;
+    padding: 1rem 0;
+    color: inherit;
+  }
+
+  .doc-link:hover {
+    text-decoration: none;
+  }
+
+  .doc-link:hover .doc-list-id {
+    color: var(--link);
+  }
+
+  .doc-line {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    align-items: baseline;
+    font-family: var(--font-mono);
+  }
+
+  .doc-list-id {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--fg);
+    transition: color 0.15s;
+  }
+
+  .doc-list-status {
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .doc-list-summary {
+    margin: 0.4rem 0 0.5rem;
+    line-height: 1.6;
+    font-size: 0.95rem;
+  }
+
+  .doc-list-meta {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--fg-muted);
+  }
+</style>
