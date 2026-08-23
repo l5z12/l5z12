@@ -1,0 +1,59 @@
+{
+  "identity": {
+    "name": "l5z12",
+    "handle": "l5z12",
+    "avatar": {
+      "src": "/l5z12-192.jpg",
+      "webp": "/l5z12-192.webp",
+      "alt": "Avatar of l5z12",
+      "attribution": {
+        "text": "Pixiv #121880528",
+        "url": "https://www.pixiv.net/en/artworks/121880528#1"
+      }
+    }
+  },
+  "document": {
+    "id": "L5Z12-PERSONAL-004",
+    "status": "Personal",
+    "updated": "August 2026",
+    "summary": "This site now renders Markdown in document bodies, compiled to HTML at build time."
+  },
+  "sections": [
+    {
+      "id": "abstract",
+      "number": null,
+      "title": "Abstract",
+      "content": "This document describes how Markdown is written and rendered in the documents on this site, and the choices behind it."
+    },
+    {
+      "id": "why",
+      "number": 1,
+      "title": "Why",
+      "content": "Every document here is a JSON file, and each section carries a `content` string that used to be printed verbatim. That was fine while the documents were lists of contacts and keys. It stopped being fine with [L5Z12-PERSONAL-003](/document/L5Z12-PERSONAL-003), which is an article: it wants links in the middle of a sentence and endpoints set in monospace, and a plain-text renderer just prints the square brackets and the backticks at the reader."
+    },
+    {
+      "id": "how-it-works",
+      "number": 2,
+      "title": "How it works",
+      "content": "Section bodies are now Markdown, compiled to HTML while the site builds — by the same processor Astro uses for its own `.md` pages. Nothing changes for the reader: the pages are still static HTML, and no Markdown parser is shipped to the browser.\n\nThe document format is unchanged, so writing a section is still just writing a string:\n\n```json\n{\n  \"id\": \"notes\",\n  \"number\": 1,\n  \"title\": \"Notes\",\n  \"content\": \"A paragraph with a [link](https://example.com) and `inline code`.\"\n}\n```"
+    },
+    {
+      "id": "what-renders",
+      "number": 3,
+      "title": "What renders",
+      "content": "CommonMark plus the GitHub extensions — **bold**, *italic*, ~~strikethrough~~, `inline code`, links, images, blockquotes, ordered and unordered lists, tables, footnotes and fenced code blocks.\n\nNot every field is treated the same way, because not every field is a place where markup belongs:\n\n| Where | Treatment |\n| --- | --- |\n| Section body | Rendered to HTML |\n| Summary on the index | Stripped to plain text |\n| `<meta>` description, JSON-LD | Stripped to plain text |\n| Markdown twin of the page | Passed through untouched |\n\nThe summaries are stripped rather than rendered because they sit inside the link that wraps each entry on [the index](/documents), and a link inside a link is not valid HTML."
+    },
+    {
+      "id": "choices",
+      "number": 4,
+      "title": "Choices",
+      "content": "Three decisions are worth writing down:\n\n- Headings inside a section body shift down two levels — a `#` becomes an `<h3>` — because the section title above it is already an `<h2>`. Prose cannot outrank the document it sits in.\n- Links to other origins get `target=\"_blank\"` and `rel=\"noopener noreferrer external\"` on their own, matching the links written by hand elsewhere in the document. Site-relative links are left alone.\n- Code blocks are not syntax-highlighted. A highlighter writes one theme's colours into inline styles, and inline styles cannot follow the light and dark toggle in the footer. Plain monospace on a bordered block is honest here, and it costs nothing."
+    },
+    {
+      "id": "markdown-twins",
+      "number": 5,
+      "title": "Markdown twins",
+      "content": "Every page is also published as Markdown: append `/index.md` to any path, such as [/document/L5Z12-PERSONAL-004/index.md](/document/L5Z12-PERSONAL-004/index.md). Those twins needed no work at all — the section bodies were already Markdown, so they pass straight through. The HTML is the derived form now, not the source."
+    }
+  ]
+}
