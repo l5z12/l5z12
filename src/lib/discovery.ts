@@ -8,6 +8,7 @@
  */
 
 import { listDocuments, getDefaultDocument } from "./documents";
+import { plainText } from "./prose";
 import { SITE_ORIGIN, SITE_NAME, updatedToIso } from "./site";
 
 export function sitemapXml(): string {
@@ -44,16 +45,18 @@ export function sitemapXml(): string {
 }
 
 export function llmsTxt(): string {
-  const intro =
-    getDefaultDocument()?.document.summary ?? "Personal homepage of l5z12.";
+  const summary = getDefaultDocument()?.document.summary;
+  const intro = summary ? plainText(summary) : "Personal homepage of l5z12.";
 
   const lines = [`# ${SITE_NAME}`, "", `> ${intro}`, "", "## Documents", ""];
 
   for (const doc of listDocuments()) {
-    const summary =
+    // One entry per line: a Markdown abstract can run to several paragraphs,
+    // which would break the list, so it is flattened to a single line of text.
+    const source =
       doc.document.summary ??
-      doc.sections.find((s) => s.id === "abstract")?.content ??
-      "";
+      doc.sections.find((s) => s.id === "abstract")?.content;
+    const summary = source ? plainText(source) : "";
     lines.push(
       `- [${doc.document.id}](${SITE_ORIGIN}/document/${doc.document.id}): ${summary}`,
     );

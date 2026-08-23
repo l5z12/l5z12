@@ -9,6 +9,7 @@ import type { Route } from "./routes";
 import type { Document } from "@/types/document";
 import { pageTitle } from "./title";
 import { getDocument, getDefaultDocument, listDocuments } from "./documents";
+import { plainText } from "./prose";
 import { SITE_ORIGIN, SITE_NAME, SITE_IMAGE, updatedToIso } from "./site";
 
 const DEFAULT_DESCRIPTION =
@@ -26,12 +27,12 @@ export interface PageMeta {
   jsonLd: Record<string, unknown>[];
 }
 
+// Both summary and abstract are Markdown; <meta> and JSON-LD take text only.
 function docDescription(doc: Document): string {
-  if (doc.document.summary) return doc.document.summary;
-  return (
-    doc.sections.find((s) => s.id === "abstract")?.content ??
-    DEFAULT_DESCRIPTION
-  );
+  const source =
+    doc.document.summary ??
+    doc.sections.find((s) => s.id === "abstract")?.content;
+  return source ? plainText(source) : DEFAULT_DESCRIPTION;
 }
 
 /** External identity URLs (rel="me") across listed documents — for `sameAs`. */

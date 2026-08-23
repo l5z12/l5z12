@@ -1,11 +1,20 @@
 ---
 import type { Document } from "@/types/document";
+import { renderProse } from "@/lib/prose";
 
 interface Props {
   doc: Document;
 }
 
 const { doc } = Astro.props;
+
+// Section bodies are Markdown; render them to HTML here, at build time.
+const sections = await Promise.all(
+  doc.sections.map(async (section) => ({
+    ...section,
+    html: section.content ? await renderProse(section.content) : null,
+  })),
+);
 ---
 
 <header class="doc-header">
@@ -57,7 +66,7 @@ const { doc } = Astro.props;
   </section>
 
   {
-    doc.sections.map((section) => (
+    sections.map((section) => (
       <section id={section.id} class="doc-section">
         <h2 class="section-heading">
           {section.number !== null && (
@@ -67,7 +76,9 @@ const { doc } = Astro.props;
         </h2>
         <hr class="section-hr" />
 
-        {section.content && <p class="section-body">{section.content}</p>}
+        {section.html && (
+          <div class="section-body prose" set:html={section.html} />
+        )}
 
         {section.items && section.items.length > 0 && (
           <dl class="item-list">
@@ -212,9 +223,10 @@ const { doc } = Astro.props;
     margin: 0 0 1rem;
   }
 
+  /* Layout only — the Markdown inside is styled by the global `.prose`
+     rules in base.css, which scoped styles cannot reach. */
   .section-body {
     margin: 0 0 0.75rem;
-    line-height: 1.7;
   }
 
   .item-list {

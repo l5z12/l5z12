@@ -125,3 +125,129 @@ button {
 .mono {
   font-family: var(--font-mono);
 }
+
+/* ── Markdown prose ─────────────────────────────────────────────────────
+ * Section bodies are authored as Markdown and rendered to HTML at build
+ * time (src/lib/prose.ts). These rules live here, not in DocumentRenderer,
+ * because Astro's scoped styles never reach markup injected with set:html.
+ *
+ * Deliberately quiet: the same border, muted grey and mono font the rest of
+ * the document uses, so prose reads as part of the page rather than as a
+ * separately themed block.
+ */
+.prose > :first-child {
+  margin-top: 0;
+}
+
+.prose > :last-child {
+  margin-bottom: 0;
+}
+
+.prose p {
+  margin: 0 0 0.75rem;
+  line-height: 1.7;
+}
+
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin: 1.25rem 0 0.5rem;
+  letter-spacing: 0.02em;
+}
+
+.prose ul,
+.prose ol {
+  margin: 0 0 0.75rem;
+  padding-left: 1.5rem;
+}
+
+.prose li {
+  margin: 0.2rem 0;
+  line-height: 1.7;
+}
+
+.prose li > ul,
+.prose li > ol {
+  margin: 0.2rem 0 0;
+}
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 0.05em 0.3em;
+}
+
+.prose pre {
+  border: 1px solid var(--border);
+  padding: 0.75rem 1rem;
+  margin: 0 0 0.75rem;
+  overflow-x: auto;
+}
+
+.prose pre code {
+  border: none;
+  border-radius: 0;
+  padding: 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.prose blockquote {
+  border-left: 2px solid var(--border);
+  padding-left: 1rem;
+  margin: 0 0 0.75rem;
+  color: var(--fg-muted);
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 1.5rem 0;
+}
+
+.prose table {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.prose th,
+.prose td {
+  border: 1px solid var(--border);
+  padding: 0.35rem 0.6rem;
+  text-align: left;
+}
+
+.prose th {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--fg-muted);
+}
+
+.prose img {
+  margin: 0 0 0.75rem;
+  border: 1px solid var(--border);
+}
+
+.prose sup a,
+.prose .footnotes {
+  font-size: 0.85rem;
+}
+
+.prose .footnotes {
+  color: var(--fg-muted);
+  border-top: 1px solid var(--border);
+  margin-top: 1.5rem;
+  padding-top: 0.5rem;
+}

@@ -14,7 +14,7 @@
       "id": "abstract",
       "number": null,
       "title": "Abstract",
-      "content": "Free-form prose describing the purpose of this document."
+      "content": "Free-form prose describing the purpose of this document. Markdown is supported: **bold**, `code`, [links](https://example.com), lists."
     },
     {
       "id": "details",

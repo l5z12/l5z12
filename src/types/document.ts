@@ -20,6 +20,11 @@ export interface Section {
   id: string;
   number: number | null;
   title: string;
+  /**
+   * Section body, authored as Markdown (CommonMark + GFM). Rendered to HTML at
+   * build time by src/lib/prose.ts and passed through verbatim into the
+   * Markdown twin of the page.
+   */
   content?: string;
   items?: SectionItem[];
 }
@@ -28,7 +33,11 @@ export interface DocumentMeta {
   id: string;
   status: string;
   updated: string;
-  /** Optional listing-page summary. Falls back to abstract section if absent. */
+  /**
+   * Optional listing-page summary. Falls back to abstract section if absent.
+   * Markdown is allowed but stripped to plain text wherever it is used — the
+   * index, `<meta>` descriptions and JSON-LD.
+   */
   summary?: string;
   /** Hide from /documents index but keep reachable by direct URL. */
   unlisted?: boolean;

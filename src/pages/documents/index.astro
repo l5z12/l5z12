@@ -2,15 +2,19 @@
 import Base from "@/layouts/Base.astro";
 import { listDocuments } from "@/lib/documents";
 import { parseRoute } from "@/lib/routes";
+import { plainText } from "@/lib/prose";
 import type { Document } from "@/types/document";
 
 const docs = listDocuments();
 const route = parseRoute("/documents");
 
+// Stripped rather than rendered: the summary sits inside the entry's <a>,
+// where a link from the Markdown would nest an anchor inside an anchor.
 function summaryFor(doc: Document): string {
-  if (doc.document.summary) return doc.document.summary;
-  const abstract = doc.sections.find((s) => s.id === "abstract");
-  return abstract?.content ?? "";
+  const source =
+    doc.document.summary ??
+    doc.sections.find((s) => s.id === "abstract")?.content;
+  return source ? plainText(source) : "";
 }
 ---
 

@@ -8,11 +8,19 @@
 
 import type { Document } from "@/types/document";
 import { getDocument, getDefaultDocument, listDocuments } from "./documents";
+import { plainText } from "./prose";
 import { SITE_ORIGIN, SITE_NAME } from "./site";
 
+/**
+ * Index entries are one line each, so a multi-paragraph Markdown abstract is
+ * flattened to text. Section bodies below keep their Markdown verbatim — the
+ * output is Markdown, which is what they already are.
+ */
 function summaryFor(doc: Document): string {
-  if (doc.document.summary) return doc.document.summary;
-  return doc.sections.find((s) => s.id === "abstract")?.content ?? "";
+  const source =
+    doc.document.summary ??
+    doc.sections.find((s) => s.id === "abstract")?.content;
+  return source ? plainText(source) : "";
 }
 
 export function documentToMarkdown(doc: Document): string {
