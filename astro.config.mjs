@@ -64,6 +64,56 @@ function securityManifest() {
   };
 }
 
+/**
+ * Legacy Markdown-twin redirects.
+ *
+ * Each page's Markdown twin moved from `<path>/index.md` to the flat
+ * `<path>.md`. Emit a Cloudflare `_redirects` file so the old paths keep
+ * resolving — regenerated every build from the twins actually written to dist,
+ * so it never drifts from the document set. The home twin stays at `/index.md`
+ * (there is no flat form for `/`), so it is skipped.
+ */
+function markdownRedirects() {
+  return {
+    name: "markdown-redirects",
+    hooks: {
+      "astro:build:done": ({ dir, logger }) => {
+        const outDir = fileURLToPath(dir);
+        const rules = [];
+
+        function scan(d) {
+          for (const name of readdirSync(d)) {
+            const full = join(d, name);
+            if (statSync(full).isDirectory()) {
+              scan(full);
+            } else if (name.endsWith(".md")) {
+              const path = "/" + relative(outDir, full).replace(/\\/g, "/");
+              if (path === "/index.md") continue; // home: no flat form
+              const legacy = path.slice(0, -".md".length) + "/index.md";
+              rules.push(`${legacy} ${path} 301`);
+            }
+          }
+        }
+
+        scan(outDir);
+        rules.sort();
+
+        writeFileSync(
+          join(outDir, "_redirects"),
+          [
+            "# Legacy Markdown-twin redirects — generated at build time.",
+            "# Each page's Markdown twin moved from <path>/index.md to <path>.md.",
+            ...rules,
+            "",
+          ].join("\n"),
+        );
+
+        logger.info(`${rules.length} legacy .md redirect(s) → _redirects`);
+      },
+    },
+  };
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://l5z12.dev",
@@ -72,7 +122,9 @@ export default defineConfig({
   build: { format: "directory" },
   // Nothing here needs client JS: keep the two tiny inline theme scripts inline
   // and let the one email-reveal island stay a hoisted module.
-  integrations: [securityManifest()],
+  // markdownRedirects() runs first so its _redirects file is present when
+  // securityManifest() hashes the tree.
+  integrations: [markdownRedirects(), securityManifest()],
   vite: {
     resolve: {
       alias: {

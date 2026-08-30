@@ -100,7 +100,7 @@ Notes on how it renders here:
 - `document.summary` may contain Markdown too, but everywhere it is used — the
   `/documents` index, `<meta>` descriptions, JSON-LD, `llms.txt` — it is
   stripped to a single line of plain text.
-- The Markdown twin of each page (`/document/<id>/index.md`) passes section
+- The Markdown twin of each page (`/document/<id>.md`) passes section
   content through unchanged; it was Markdown to begin with.
 
 ## Field notes

@@ -71,9 +71,9 @@ export function llmsTxt(): string {
     "",
     "## Notes",
     "",
-    "A Markdown version of each page is published alongside it: append `/index.md` " +
-      "to any page path (e.g. `/index.md`, `/documents/index.md`, " +
-      "`/document/<id>/index.md`).",
+    "A Markdown version of each page is published alongside it: append `.md` " +
+      "to any page path (e.g. `/index.md`, `/documents.md`, " +
+      "`/document/<id>.md`).",
     "",
   );
 

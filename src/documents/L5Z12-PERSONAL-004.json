@@ -53,7 +53,7 @@
       "id": "markdown-twins",
       "number": 5,
       "title": "Markdown twins",
-      "content": "Every page is also published as Markdown: append `/index.md` to any path, such as [/document/L5Z12-PERSONAL-004/index.md](/document/L5Z12-PERSONAL-004/index.md). Those twins needed no work at all — the section bodies were already Markdown, so they pass straight through. The HTML is the derived form now, not the source."
+      "content": "Every page is also published as Markdown: append `.md` to any path, such as [/document/L5Z12-PERSONAL-004.md](/document/L5Z12-PERSONAL-004.md). Those twins needed no work at all — the section bodies were already Markdown, so they pass straight through. The HTML is the derived form now, not the source."
     }
   ]
 }
