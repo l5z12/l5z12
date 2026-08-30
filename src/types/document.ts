@@ -4,7 +4,9 @@ export interface AvatarConfig {
   /** Optional WebP path used as the preferred source. */
   webp?: string;
   alt: string;
-  attribution: { text: string; url: string };
+  /** Art credit, shown as an "Art:" line under the avatar. Omit for a
+   * self-authored image (e.g. a project logo) that needs no attribution. */
+  attribution?: { text: string; url: string };
 }
 
 export interface SectionItem {

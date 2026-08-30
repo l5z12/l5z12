@@ -49,16 +49,18 @@ const sections = await Promise.all(
               class="avatar"
             />
           </picture>
-          <p class="avatar-credit">
-            Art:&nbsp;
-            <a
-              href={doc.identity.avatar.attribution.url}
-              target="_blank"
-              rel="noopener noreferrer external"
-            >
-              {doc.identity.avatar.attribution.text}
-            </a>
-          </p>
+          {doc.identity.avatar.attribution && (
+            <p class="avatar-credit">
+              Art:&nbsp;
+              <a
+                href={doc.identity.avatar.attribution.url}
+                target="_blank"
+                rel="noopener noreferrer external"
+              >
+                {doc.identity.avatar.attribution.text}
+              </a>
+            </p>
+          )}
         </div>
       )
     }

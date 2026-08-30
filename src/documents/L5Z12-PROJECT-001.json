@@ -1,0 +1,78 @@
+{
+  "identity": {
+    "name": "NBT Viewer",
+    "handle": "l5z12",
+    "avatar": {
+      "src": "/nbtviewer-icon.png",
+      "alt": "NBT Viewer icon"
+    }
+  },
+  "document": {
+    "id": "L5Z12-PROJECT-001",
+    "status": "Project",
+    "updated": "August 2026",
+    "summary": "NBT Viewer — a client-side Fabric mod that reads the NBT / data-component data your client already has for items, blocks and entities, with no /data access. Minecraft 1.20–26.2."
+  },
+  "sections": [
+    {
+      "id": "abstract",
+      "number": null,
+      "title": "Abstract",
+      "content": "**NBT Viewer** is a client-side [Fabric](https://fabricmc.net/) mod that surfaces the NBT / data-component data the game already sends to your client — for **items**, **blocks / block entities**, and **entities** — without needing operator `/data` access.\n\nIt only shows data the vanilla client already has, so it works on any server; in singleplayer (or on servers that also run it) it can pull the full block-entity and entity NBT."
+    },
+    {
+      "id": "features",
+      "number": 1,
+      "title": "Features",
+      "content": "- **Searchable tree GUI** — a full-screen, collapsible NBT tree with substring or regex search, a live match count, keyboard navigation, and recursive fold.\n- **Copy & export** — copy the whole tree, a node, a bare value, or an SNBT path; or save to a timestamped `.snbt` file for data too large for the clipboard.\n- **HUD overlay** — live NBT of the current target in any screen corner: always, while a key is held, or while sneaking.\n- **`/viewdata` command** (alias `/nbtview`) — inspect by crosshair, held item, slot, coordinates, network id, UUID, entity type, player name, or a vanilla `@e[…]` selector, with a picker when several match.\n- **Rebindable hotkeys**, a **Jade** tooltip extension, and a Mod Menu + JSON config screen."
+    },
+    {
+      "id": "installation",
+      "number": 2,
+      "title": "Installation",
+      "content": "Drop the jar for your Minecraft version into `.minecraft/mods/` alongside Fabric API.",
+      "items": [
+        { "label": "Requires", "value": "Fabric Loader + Fabric API", "mono": true },
+        { "label": "Optional", "value": "Jade, Mod Menu", "mono": true },
+        { "label": "Versions", "value": "Minecraft 1.20 – 26.2", "mono": true }
+      ]
+    },
+    {
+      "id": "usage",
+      "number": 3,
+      "title": "Usage",
+      "content": "| Key / command | Action |\n| --- | --- |\n| `N` | Open NBT of the target (block ▸ entity ▸ item) |\n| `/viewdata … gui · copy · save` | Inspect to the screen, clipboard, or a file |\n| `/viewdata entity <id · uuid · type · @e[…]>` | Target something you can't aim at |\n| `Ctrl+F · Ctrl+C · Ctrl+B · Ctrl+S` | Search · copy node · copy value · save |\n| `Ctrl+← / Ctrl+→` | Collapse / expand the selected subtree |"
+    },
+    {
+      "id": "references",
+      "number": 4,
+      "title": "References",
+      "items": [
+        {
+          "label": "Repository",
+          "value": "github.com/l5z12/nbtviewer",
+          "url": "https://github.com/l5z12/nbtviewer",
+          "mono": true
+        },
+        {
+          "label": "Releases",
+          "value": "github.com/l5z12/nbtviewer/releases",
+          "url": "https://github.com/l5z12/nbtviewer/releases",
+          "mono": true
+        },
+        {
+          "label": "Issues",
+          "value": "github.com/l5z12/nbtviewer/issues",
+          "url": "https://github.com/l5z12/nbtviewer/issues",
+          "mono": true
+        },
+        {
+          "label": "License",
+          "value": "GPL-3.0-or-later",
+          "url": "https://www.gnu.org/licenses/gpl-3.0.html",
+          "mono": true
+        }
+      ]
+    }
+  ]
+}
