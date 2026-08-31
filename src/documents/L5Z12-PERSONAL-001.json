@@ -50,6 +50,13 @@
           "url": "https://x.com/l5z12_",
           "rel": "me",
           "mono": true
+        },
+        {
+          "label": "Bluesky",
+          "value": "bsky.app/profile/l5z12.dev",
+          "url": "https://bsky.app/profile/l5z12.dev",
+          "rel": "me",
+          "mono": true
         }
       ]
     },
