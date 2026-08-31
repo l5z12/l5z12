@@ -80,6 +80,38 @@
           "mono": true
         }
       ]
+    },
+    {
+      "id": "referrals",
+      "number": 4,
+      "title": "Referrals",
+      "content": "Referral and invite links for services I use. Signing up through one costs you nothing and usually benefits both of us.",
+      "items": [
+        {
+          "label": "Proton",
+          "value": "pr.tn/ref/QSJZVQF3",
+          "url": "https://pr.tn/ref/QSJZVQF3",
+          "mono": true
+        },
+        {
+          "label": "JustMySocks",
+          "value": "/members/aff.php?aff=34995",
+          "url": "https://justmysocks.net/members/aff.php?aff=34995",
+          "mono": true
+        },
+        {
+          "label": "Racknerd",
+          "value": "/aff.php?aff=21078",
+          "url": "https://my.racknerd.com/aff.php?aff=21078",
+          "mono": true
+        },
+        {
+          "label": "BandwagonHost",
+          "value": "/aff.php?aff=84088",
+          "url": "https://bandwagonhost.com/aff.php?aff=84088",
+          "mono": "true"
+        }
+      ]
     }
   ]
 }
