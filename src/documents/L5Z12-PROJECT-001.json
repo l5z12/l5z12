@@ -10,7 +10,7 @@
   "document": {
     "id": "L5Z12-PROJECT-001",
     "status": "Project",
-    "updated": "August 2026",
+    "updated": "September 2026",
     "summary": "NBT Viewer — a client-side Fabric mod that reads the NBT / data-component data your client already has for items, blocks and entities, with no /data access. Minecraft 1.20–26.2."
   },
   "sections": [
@@ -34,7 +34,7 @@
       "items": [
         { "label": "Requires", "value": "Fabric Loader + Fabric API", "mono": true },
         { "label": "Optional", "value": "Jade, Mod Menu", "mono": true },
-        { "label": "Versions", "value": "Minecraft 1.20 – 26.2", "mono": true }
+        { "label": "Versions", "value": "Minecraft 1.20 – 26.3", "mono": true }
       ]
     },
     {
