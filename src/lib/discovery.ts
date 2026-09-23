@@ -55,7 +55,8 @@ export function llmsTxt(): string {
     // which would break the list, so it is flattened to a single line of text.
     const source =
       doc.document.summary ??
-      doc.sections.find((s) => s.id === "abstract")?.content;
+      doc.sections.find((s) => s.id === "abstract")?.content ??
+      doc.content;
     const summary = source ? plainText(source) : "";
     lines.push(
       `- [${doc.document.id}](${SITE_ORIGIN}/document/${doc.document.id}): ${summary}`,

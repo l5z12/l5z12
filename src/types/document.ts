@@ -55,4 +55,6 @@ export interface Document {
   identity: DocumentIdentity;
   document: DocumentMeta;
   sections: Section[];
+  /** Full body of an owner-authored .md document, below the page title. */
+  content?: string;
 }

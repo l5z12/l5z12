@@ -7,6 +7,7 @@ interface Props {
 }
 
 const { doc } = Astro.props;
+const bodyHtml = doc.content ? await renderProse(doc.content, 0) : null;
 
 // Section bodies are Markdown; render them to HTML here, at build time.
 const sections = await Promise.all(
@@ -66,6 +67,8 @@ const sections = await Promise.all(
     }
     <h1 class="identity-name">{doc.identity.name}</h1>
   </section>
+
+  {bodyHtml && <div class="document-content prose" set:html={bodyHtml} />}
 
   {
     sections.map((section) => (

@@ -1,6 +1,7 @@
 # Documents
 
-Each `.json` file in this directory becomes a document on the site:
+Each `.json` or `.md` file in this directory becomes a document on the site
+(except this README and files starting with `_`):
 
 | File                      | URL                            |
 | ------------------------- | ------------------------------ |
@@ -11,6 +12,36 @@ The index at `/documents` is generated automatically from the files here.
 The home page (`/`) renders the document with id `L5Z12-PERSONAL-001`.
 
 ## Add a new document
+
+### Markdown files
+
+1. Copy `_template.md` to a new `.md` file in this directory.
+2. Set `identity.name` (the page title), `identity.handle`, and a unique
+   `document.id` in the YAML frontmatter between the opening `---` lines.
+3. Set `document.status`, `document.updated` (a string), and optionally
+   `document.summary`. Remove `unlisted: true` when you want it listed publicly.
+4. Write Markdown below the frontmatter, then run `bun run build` and deploy.
+
+The URL comes from `document.id`, not the filename. IDs may contain letters,
+digits, hyphens, and underscores, and must start with a letter or digit.
+Duplicate IDs across JSON and Markdown files stop the build with an error.
+Invalid or missing Markdown metadata also stops the build and names the file.
+
+The layout supplies the page's `<h1>` from `identity.name`; start body sections
+with `##`. Headings in a full `.md` body keep their original level. Lists,
+tables, fenced code, links, and other supported Markdown render at build time.
+The body is processed as one document so reference links and footnotes can be
+used across sections. Write section content in the body, not in frontmatter.
+Use site-root paths for local links and images, such as `/documents` or
+`/image.png` for an image stored in `public/image.png`.
+
+The optional `identity.avatar` fields work just like the JSON format below.
+Summaries fall back to the Markdown body when `document.summary` is omitted;
+an explicit short summary is recommended for long documents.
+The body also appears in the page's `.md` download without its YAML metadata.
+Markdown is trusted owner-authored content, like the existing JSON prose.
+
+### JSON files
 
 1. Copy `_template.json` (or any existing document) to a new file.
 2. Pick a unique `document.id` — convention is `L5Z12-<CATEGORY>-<NNN>`.

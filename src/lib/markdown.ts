@@ -19,7 +19,8 @@ import { SITE_ORIGIN, SITE_NAME } from "./site";
 function summaryFor(doc: Document): string {
   const source =
     doc.document.summary ??
-    doc.sections.find((s) => s.id === "abstract")?.content;
+    doc.sections.find((s) => s.id === "abstract")?.content ??
+    doc.content;
   return source ? plainText(source) : "";
 }
 
@@ -32,6 +33,8 @@ export function documentToMarkdown(doc: Document): string {
     `**Updated:** ${doc.document.updated}`,
     "",
   ];
+
+  if (doc.content) lines.push(doc.content, "");
 
   for (const section of doc.sections) {
     const heading =

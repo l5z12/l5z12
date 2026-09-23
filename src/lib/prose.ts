@@ -52,17 +52,20 @@ const shiftHeadings: HastPlugin = {
   },
 };
 
-let processor: Promise<MarkdownRenderer> | null = null;
+const processors = new Map<number, Promise<MarkdownRenderer>>();
 
-function getProcessor(): Promise<MarkdownRenderer> {
+function getProcessor(headingOffset: 0 | 2): Promise<MarkdownRenderer> {
   // Syntax highlighting is off on purpose: Shiki writes a theme's colours into
   // inline styles, which cannot follow the light/dark toggle here. Code blocks
   // come out as plain <pre><code>, styled from base.css with the site's own
   // two-colour palette.
+  let processor = processors.get(headingOffset);
   processor ??= createSatteriMarkdownProcessor({
     syntaxHighlight: false,
-    hastPlugins: [externalLinks, shiftHeadings],
+    hastPlugins:
+      headingOffset === 2 ? [externalLinks, shiftHeadings] : [externalLinks],
   });
+  processors.set(headingOffset, processor);
   return processor;
 }
 
@@ -71,14 +74,18 @@ function getProcessor(): Promise<MarkdownRenderer> {
 const cache = new Map<string, string>();
 
 /** Render a Markdown block to HTML. Build-time only. */
-export async function renderProse(src: string): Promise<string> {
-  const cached = cache.get(src);
+export async function renderProse(
+  src: string,
+  headingOffset: 0 | 2 = 2,
+): Promise<string> {
+  const key = `${headingOffset}:${src}`;
+  const cached = cache.get(key);
   if (cached !== undefined) return cached;
 
-  const renderer = await getProcessor();
+  const renderer = await getProcessor(headingOffset);
   const { code } = await renderer.render(src);
   const html = code.trim();
-  cache.set(src, html);
+  cache.set(key, html);
   return html;
 }
 

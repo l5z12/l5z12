@@ -148,6 +148,16 @@ button {
   line-height: 1.7;
 }
 
+.prose h2 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 2rem 0 1rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .prose h3,
 .prose h4,
 .prose h5,

@@ -31,7 +31,8 @@ export interface PageMeta {
 function docDescription(doc: Document): string {
   const source =
     doc.document.summary ??
-    doc.sections.find((s) => s.id === "abstract")?.content;
+    doc.sections.find((s) => s.id === "abstract")?.content ??
+    doc.content;
   return source ? plainText(source) : DEFAULT_DESCRIPTION;
 }
 
